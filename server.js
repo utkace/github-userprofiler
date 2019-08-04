@@ -1,6 +1,6 @@
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
 const redis = require("redis");
+const SetupRoutes = require("./routes/components.js");
 
 // create and connect redis client to local instance.
 const client = redis.createClient(
@@ -16,15 +16,9 @@ client.on("error", err => {
   console.log(err);
 });
 
-//Initializing database
-let db = new sqlite3.Database("./db/githubUsers.db", err => {
-  if (err) {
-    return console.error(err.message);
-  }
-  console.log("Connected to the SQlite database.");
-});
-
 const app = express(); //setup express
+
+SetupRoutes(app); //setup routes
 
 app.listen("5000", () => {
   console.log("Server started on port 5000");
