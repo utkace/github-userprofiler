@@ -7,7 +7,6 @@ const router = new Router();
 router.use(bodyParser.json());
 
 router.post("/getUsers", (req, res) => {
-  console.log(req.body);
   try {
     const usernames = req.body.query.usernames;
     getUserData(usernames).then(data => {
