@@ -1,4 +1,5 @@
-const base = `${process.env.PORT}/api` || "http://localhost:5000/api";
+const base =
+  `http://localhost:${process.env.PORT}/api` || "http://localhost:5000/api";
 
 export function Fetch(path, params) {
   return fetch(base + path, params).then(response => {
