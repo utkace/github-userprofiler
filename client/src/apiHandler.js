@@ -1,9 +1,8 @@
-const base =
-  `http://localhost:${JSON.stringify(process.env.PORT)}/api` ||
-  "http://localhost:5000/api";
-
+const production = "https://github-userprofiler.herokuapp.com/api";
+const development = "http://localhost:5000/api";
+const url = process.env.NODE_ENV ? production : development;
 export function Fetch(path, params) {
-  return fetch(base + path, params).then(response => {
+  return fetch(url + path, params).then(response => {
     if (!response.ok) {
       throw new Error(response.statusText);
     }
