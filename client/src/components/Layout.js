@@ -35,7 +35,7 @@ export default class Layout extends Component {
       })
     };
 
-    const res = await Fetch("/getUsers", params);
+    const res = await Fetch("/user/getUsers", params);
     this.setState({
       userdata: res
     });
@@ -43,7 +43,7 @@ export default class Layout extends Component {
   render() {
     return (
       <div className="Layout container">
-        <form>
+        <form id="user-form">
           <div className="form-group">
             <label htmlFor="userids">Enter user_id's seperated by " , "</label>
             <input
@@ -53,10 +53,14 @@ export default class Layout extends Component {
               placeholder="<user_name1>, <user_name2>, <user_name3>..."
               ref={this.usernameInputRef}
             />
+            <button
+              className="btn btn-primary my-2"
+              onClick={this.SubmitHandler}
+            >
+              Submit
+            </button>
           </div>
-          <button className="btn btn-primary" onClick={this.SubmitHandler}>
-            Submit
-          </button>
+
           <UserContainer usernames={this.state.userdata} />
         </form>
       </div>
