@@ -1,5 +1,6 @@
 const sqlite3 = require("sqlite3").verbose();
 const redis = require("redis");
+const fetch = require("node-fetch");
 
 //Initializing database
 let db = new sqlite3.Database("./db/githubUsers.db", err => {
@@ -95,8 +96,53 @@ function sendToCache(data, key) {
   return data;
 }
 
+//A function to get user from github api
+function getSingleUserDatafromAPI(user) {
+  return new Promise(async (resolve, reject) => {
+    const res = await fetch(`https://api.github.com/users/${user}`, {
+      method: "GET"
+    });
+
+    const data = await res.json();
+    const newdata = {
+      id: data.id,
+      login: data.login,
+      avatar_url: data.avatar_url,
+      name: data.name,
+      bio: data.bio,
+      public_repos: data.public_repos,
+      public_gists: data.public_gists,
+      followers: data.followers,
+      following: data.following,
+      source: "api"
+    };
+    resolve(newdata);
+  });
+}
+//----------------------------------------
+
+//A function to get user from the database
+function getSingleUserDatafromDB(user) {
+  result = [];
+  return new Promise(async (resolve, reject) => {
+    const res = await getFromDB(user).then(async res => {
+      if (res) {
+        //found in database , return
+        const data = await res;
+        data.source = "database";
+        resolve(data);
+      } else {
+        //call the function to call the API
+        await getSingleUserDatafromAPI(user).then(data => {
+          addToDB(data);
+          resolve(data);
+        });
+      }
+    });
+  });
+}
+//-----------------------------------------
+
 module.exports = {
-  getFromDB,
-  addToDB,
   getFromCache
 };
