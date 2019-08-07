@@ -11,6 +11,7 @@ let db = new sqlite3.Database("./db/githubUsers.db", err => {
 });
 
 function getFromDB(user) {
+  //get user data from the database
   let sql = `SELECT *
   FROM github_user
   WHERE login = ?`;
@@ -28,7 +29,7 @@ function getFromDB(user) {
 }
 
 function addToDB(data) {
-  // to add the values of users to our db
+  // to add the values of user to our db
   db.run(
     `INSERT INTO github_user VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
@@ -53,6 +54,7 @@ function addToDB(data) {
 }
 
 function getFromCache(key) {
+  //this function returns the user data from the cache
   return new Promise((resolve, reject) => {
     client.get(key, (err, data) => {
       // If that key exists in Redis store
@@ -69,12 +71,13 @@ function getFromCache(key) {
 }
 
 function sendToCache(data, key) {
+  //this function inserts the user data to the cache
   client.setex(key, 30, JSON.stringify(data));
   return data;
 }
 
-//A function to get user from github api
 function getSingleUserDatafromAPI(user) {
+  //A function to get user from github api
   return new Promise(async (resolve, reject) => {
     const res = await fetch(`https://api.github.com/users/${user}`, {
       method: "GET"
@@ -110,17 +113,16 @@ function getSingleUserDatafromAPI(user) {
 }
 //----------------------------------------
 
-//A function to get user from the database
+//A function wrapper to get user from the database
 function getSingleUserDatafromDB(user) {
   console.log("searching " + user);
   return new Promise(async (resolve, reject) => {
     await getFromDB(user).then(async res => {
       if (res) {
         //found in database , return
-        console.log("got from db " + user);
         const data = await res;
         data.source = "database";
-
+        //send to cache
         await sendToCache(data, data.login);
         console.log("added to cache " + user);
         resolve(data);

@@ -5,6 +5,7 @@ const {
 } = require("./helper");
 
 async function getUserData(usernames) {
+  //this function iterates over the array of input and returns the result as an array of userdata
   result = [];
   console.log("start ", usernames);
   const getData = () => {
@@ -14,22 +15,17 @@ async function getUserData(usernames) {
         await getFromCache(user)
           .then(async res => {
             //if found in cache push to final result
-            console.log("got from cache " + user);
             result.push(res);
           })
           .catch(async err => {
-            console.log("ERROR : ", err);
             //call the function to look up in DB
             await getSingleUserDatafromDB(user)
               .then(data => {
-                console.log("Got " + user);
                 result.push(data);
               })
               .catch(async err => {
-                console.log("ERROR : ", err);
                 //call the function to call the API
                 await getSingleUserDatafromAPI(user).then(data => {
-                  console.log("got from api " + user);
                   result.push(data);
                 });
               });
@@ -38,7 +34,6 @@ async function getUserData(usernames) {
     );
   };
   await getData();
-  console.log("returning " + result.map(el => el.login));
   return result;
 }
 
