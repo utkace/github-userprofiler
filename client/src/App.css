@@ -1,5 +1,8 @@
 @import url("https://fonts.googleapis.com/css?family=Poppins&display=swap");
 
+body {
+  background: #23a5de;
+}
 #root {
   padding: 0px;
 }
@@ -9,6 +12,14 @@
   font-size: 12px;
 }
 
+.App .desc {
+  color: white;
+  font-size: 14px;
+  padding: 10px 20px;
+}
+.App h2 {
+  color: #124f8d;
+}
 #user-form label {
   font-size: 14px;
 }
@@ -21,13 +32,30 @@
   text-align: center;
 }
 
+#user-form button {
+  background: #124f8d;
+}
+
+/*USER CARDS*/
+.usercard {
+  margin-bottom: 15px;
+  font-size: 14px;
+}
 .card img {
   border-radius: 15px;
 }
 .card .card-title {
   font-size: 16px;
+  color: #23a5de;
 }
 
 .card .card-text span {
-  font-size: 12px;
+  font-size: 14px;
+  color: #124f8d;
+}
+.card.not-found {
+  min-height: 100px;
+  text-align: center;
+  font-size: 18px;
+  padding-top: 10px;
 }

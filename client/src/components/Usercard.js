@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Usercard(props) {
   return (
-    <div className="card my-2 p-1">
+    <div className="card usercard p-1">
       <div className="row no-gutters">
         <div className="col-4">
           <img

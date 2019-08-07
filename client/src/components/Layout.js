@@ -43,9 +43,13 @@ export default class Layout extends Component {
   render() {
     return (
       <div className="Layout container">
+        <p className="desc">
+          This a small application to find github repositories by their{" "}
+          <b>usernames.</b> Simply enter a username or a list of usernames by
+          separating the by "," and click <b>Find!</b>
+        </p>
         <form id="user-form">
           <div className="form-group">
-            <label htmlFor="userids">Enter user_id's seperated by " , "</label>
             <input
               type="text"
               className="form-control"
@@ -57,7 +61,7 @@ export default class Layout extends Component {
               className="btn btn-primary my-2"
               onClick={this.SubmitHandler}
             >
-              Submit
+              FIND
             </button>
           </div>
 

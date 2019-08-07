@@ -61,17 +61,8 @@ function getFromCache(key) {
         data.source = "cache";
         resolve(data);
       } else {
-        getSingleUserDatafromDB(key)
-          .then(data => {
-            sendToCache(data, key);
-            resolve(data);
-          })
-          .catch(error => {
-            // log error message
-            console.log(error);
-            // send error to the client
-            reject(error.toString());
-          });
+        // send error to the client
+        reject("Not found in cache");
       }
     });
   });
@@ -90,6 +81,13 @@ function getSingleUserDatafromAPI(user) {
     });
 
     const data = await res.json();
+    if (res.status !== 200) {
+      resolve({
+        login: user,
+        message: data.message,
+        source: null
+      });
+    }
     const newdata = {
       id: data.id,
       login: data.login,
@@ -102,6 +100,11 @@ function getSingleUserDatafromAPI(user) {
       following: data.following,
       source: "api"
     };
+    await addToDB(data);
+    console.log("added to db " + user);
+
+    await sendToCache(data, data.login);
+    console.log("added to cache " + user);
     resolve(newdata);
   });
 }
@@ -109,20 +112,20 @@ function getSingleUserDatafromAPI(user) {
 
 //A function to get user from the database
 function getSingleUserDatafromDB(user) {
-  result = [];
+  console.log("searching " + user);
   return new Promise(async (resolve, reject) => {
-    const res = await getFromDB(user).then(async res => {
+    await getFromDB(user).then(async res => {
       if (res) {
         //found in database , return
+        console.log("got from db " + user);
         const data = await res;
         data.source = "database";
+
+        await sendToCache(data, data.login);
+        console.log("added to cache " + user);
         resolve(data);
       } else {
-        //call the function to call the API
-        await getSingleUserDatafromAPI(user).then(data => {
-          addToDB(data);
-          resolve(data);
-        });
+        reject("Not found in DB");
       }
     });
   });
@@ -130,5 +133,7 @@ function getSingleUserDatafromDB(user) {
 //-----------------------------------------
 
 module.exports = {
-  getFromCache
+  getFromCache,
+  getSingleUserDatafromDB,
+  getSingleUserDatafromAPI
 };
